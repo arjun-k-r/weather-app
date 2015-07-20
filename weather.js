@@ -43,7 +43,7 @@ GLoc = {
 
         // Do magic with the location
         g.startPos = position;
-        g.searchQuery = 'http://api.openweathermap.org/data/2.5/weather?lat=' + g.startPos.coords.latitude + '$lon' + g.startPos.coords.longitude + '';
+        g.searchQuery = 'http://api.openweathermap.org/data/2.5/weather?lat=' + g.startPos.coords.latitude + '&lon=' + g.startPos.coords.longitude + '';
 
         $.getJSON(g.searchQuery, function(data) {
             WeatherInfo.setWeatherData(data);
@@ -143,7 +143,7 @@ WeatherInfo = {
         GLoc.hideGeoErrorMessageBanner();
         $('#front-page-description').addClass('hide');
         w.weather.removeClass('hide');
-        w.location.text(data.name + ', ' + WeatherInfo.isValid(data.sys.country));
+        w.location.text(data.name + ', ' + data.sys.country);
         w.humidity.text(data.main.humidity);
         w.weatherDescription.text(data.weather[0].description);
         w.tempNumber = data.main.temp;
