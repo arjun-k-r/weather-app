@@ -143,7 +143,7 @@ WeatherInfo = {
         GLoc.hideGeoErrorMessageBanner();
         $('#front-page-description').addClass('hide');
         w.weather.removeClass('hide');
-        w.location.text(data.name + ', ' + data.sys.country);
+        w.location.text(data.name + ', ' + WeatherInfo.isValid(data.sys.country));
         w.humidity.text(data.main.humidity);
         w.weatherDescription.text(data.weather[0].description);
         w.tempNumber = data.main.temp;
@@ -179,7 +179,7 @@ WeatherInfo = {
     },
 
     isValid: function(weatherDataPiece) {
-        if (typeof weatherDataPiece === undefined) {
+        if (typeof weatherDataPiece !== undefined) {
             return weatherDataPiece + ' ';
         } else {
             return '';
