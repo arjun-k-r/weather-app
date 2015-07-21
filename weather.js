@@ -217,14 +217,20 @@ WeatherInfo = {
 
     getDayOrNight: function(time, sunrise, sunset) {
 
-        if (time < sunset && time >= sunrise) {
+        if (time >= sunrise && time < sunset) {
             w.dayOrNight = 'daytime';
         } else if (time < sunrise) {
-            w.dayOrNight = 'nighttime';
-        } else if (time >= sunset && time < sunrise + 86400) {
-            w.dayOrNight = 'nighttime';
-        } else {
-            w.dayOrNight = 'daytime';
+            if (time < sunset - 86400) {
+                w.dayOrNight = 'daytime';
+            } else {
+                w.dayOrNight = 'nighttime';
+            }
+        } else if (time > sunset) {
+            if (time < sunrise + 86400) {
+                w.dayOrNight = 'nighttime';
+            } else {
+                w.dayOrNight = 'daytime';
+            }
         }
     }
 };
