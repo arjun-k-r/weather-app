@@ -339,6 +339,7 @@ CanvasBackground = {
           case 'Mist' :
           case 'Sand' :
           case 'Dust' :
+          case 'Smoke':
           case 'Volcanic Ash' :
             CanvasBackground.clearAllCanvases();
             c.weatherBackground.addClass('atmosphere');
