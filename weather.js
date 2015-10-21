@@ -43,7 +43,7 @@ GLoc = {
 
         // Do magic with the location
         g.startPos = position;
-        g.searchQuery = 'http://api.openweathermap.org/data/2.5/weather?lat=' + g.startPos.coords.latitude + '&lon=' + g.startPos.coords.longitude + '';
+        g.searchQuery = 'http://api.openweathermap.org/data/2.5/weather?lat=' + g.startPos.coords.latitude + '&lon=' + g.startPos.coords.longitude + '&appid=0596fe0573fa9daa94c2912e5e383ed3' +'';
 
         $.getJSON(g.searchQuery, function(data) {
             WeatherInfo.setWeatherData(data);
@@ -132,7 +132,7 @@ WeatherInfo = {
 
     getWeatherData: function(searchQuery) {
         if (w.searchLocationInput.val() !== '') {
-            w.searchQuery = 'http://api.openweathermap.org/data/2.5/weather?q=' + w.searchLocationInput.val() + '';
+            w.searchQuery = 'http://api.openweathermap.org/data/2.5/weather?q=' + w.searchLocationInput.val() + '&appid=0596fe0573fa9daa94c2912e5e383ed3' + '';
             $.getJSON(w.searchQuery, function(data) {
                 WeatherInfo.setWeatherData(data);
             });
