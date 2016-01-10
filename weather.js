@@ -133,7 +133,7 @@ WeatherInfo = {
 
     getWeatherData: function(searchQuery) {
         if (w.searchLocationInput.val() !== '') {
-            w.searchQuery = 'http://api.openweathermap.org/data/2.5/weather?q=' + w.searchLocationInput.val() + '&appid=0596fe0573fa9daa94c2912e5e383ed3' + '&lang=' + g.userLanguage;
+            w.searchQuery = 'http://api.openweathermap.org/data/2.5/weather?q=' + w.searchLocationInput.val() + '&appid=0596fe0573fa9daa94c2912e5e383ed3' + '&lang=' + g.lang;
             $.getJSON(w.searchQuery, function(data) {
                 WeatherInfo.setWeatherData(data);
             });
