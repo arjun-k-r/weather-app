@@ -19,10 +19,11 @@ GLoc = {
     init: function() {
         g = this.settings;
         this.bindUIActions();
-        $.getJSON('http://ip-api.com/json')
-            .done(function(data) {
-                GLoc.geoSuccess(data);
-            });
+        // $.getJSON('https://www.googleapis.com/geolocation/v1/geolocate?key=AIzaSyD9pYWFlNulZ17gQuBmC2uSZXaVwTz_Xmc')
+        //     .done(function(data) {
+        //         console.log(data);
+        //         // GLoc.geoSuccess(data);
+        //     });
     },
 
     bindUIActions: function() {
@@ -37,20 +38,20 @@ GLoc = {
     },
 
     getGeoLocation: function() {
-        //navigator.geolocation.getCurrentPosition(GLoc.geoSuccess, GLoc.geoError);
+        navigator.geolocation.getCurrentPosition(GLoc.geoSuccess, GLoc.geoError);
 
         // $.getJSON('http://ip-api.com/json', function(data) {
         //     GLoc.geoSuccess(data);
         // });
 
 
-        $.getJSON('http://freegeoip.net/json/')
-            .done(function(data) {
-                GLoc.geoSuccess(data);
-            })
-            .fail(function(jqXHR, textStatus, error) {
-                GLoc.geoError(error);
-            });
+        // $.getJSON('http://freegeoip.net/json/')
+        //     .done(function(data) {
+        //         GLoc.geoSuccess(data);
+        //     })
+        //     .fail(function(jqXHR, textStatus, error) {
+        //         GLoc.geoError(error);
+        //     });
     },
 
     showGeoErrorMessageBanner: function() {
@@ -67,7 +68,8 @@ GLoc = {
 
         // Do magic with the location
         g.startPos = position;
-        g.searchQuery = 'http://api.openweathermap.org/data/2.5/weather?lat=' + g.startPos.lat + '&lon=' + g.startPos.lon + '&appid=0596fe0573fa9daa94c2912e5e383ed3' +'&lang=' + g.lang;
+        console.log(position);
+        g.searchQuery = 'http://api.openweathermap.org/data/2.5/weather?lat=' + g.startPos.coords.latitude + '&lon=' + g.startPos.coords.longitude + '&appid=0596fe0573fa9daa94c2912e5e383ed3' +'&lang=' + g.lang;
 
         $.getJSON(g.searchQuery, function(data) {
             WeatherInfo.setWeatherData(data);
