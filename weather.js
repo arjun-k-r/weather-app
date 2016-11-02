@@ -32,11 +32,6 @@ GLoc = {
 
         g.closeButton.on('click', function() {
             GLoc.hideGeoErrorMessageBanner();
-            GLoc.hideGeoDeclineMessageBanner();
-        });
-
-        g.closeDecline.on('click', function() {
-            GLoc.hideGeoDeclineMessageBanner();
         });
 
     },
@@ -83,18 +78,9 @@ GLoc = {
         g.geoErrorMessage.addClass('hide');
     },
 
-    showGeoDeclineMessageBanner: function() {
-        g.geoDeclineMessage.removeClass('hide');
-    },
-
-    hideGeoDeclineMessageBanner: function() {
-        g.geoDeclineMessage.addClass('hide');
-    },
-
     geoSuccess: function(position, method) {
         // We have the location. Don't display the banner.
         GLoc.hideGeoErrorMessageBanner();
-        GLoc.hideGeoDeclineMessageBanner();
 
         
 
@@ -130,8 +116,13 @@ GLoc = {
             break;
         case 1:
             localStorage['authorizedGeoLocation'] = 0;
-
-            GLoc.showGeoDeclineMessageBanner();
+            $.getJSON('http://ip-api.com/json')
+                        .done(function(data) {
+                            GLoc.geoSuccess(data, 'IP');
+                        })
+                    .fail(function(jqXHR, textStatus, error) {
+                        GLoc.geoError(error);
+                    });
         default:
 
         }
@@ -218,7 +209,6 @@ WeatherInfo = {
 
     setWeatherData: function(data) {
         GLoc.hideGeoErrorMessageBanner();
-        GLoc.hideGeoDeclineMessageBanner();
         $('#front-page-description').addClass('hide');
         w.weather.removeClass('hide');
         w.location.text(data.name + ', ' + data.sys.country);
