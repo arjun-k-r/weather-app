@@ -1,4 +1,10 @@
 var g,
+GLoc,
+w,
+WeatherInfo,
+c,
+CanvasBackground;
+
 GLoc = {
 
     settings: {
@@ -13,6 +19,10 @@ GLoc = {
     init: function() {
         g = this.settings;
         this.bindUIActions();
+        $.getJSON('http://freegeoip.net/json/')
+            .done(function(data) {
+                GLoc.geoSuccess(data);
+            });
     },
 
     bindUIActions: function() {
@@ -26,7 +36,7 @@ GLoc = {
 
     },
 
-    getGeoLocation: function(numToGet) {
+    getGeoLocation: function() {
         //navigator.geolocation.getCurrentPosition(GLoc.geoSuccess, GLoc.geoError);
 
         // $.getJSON('http://ip-api.com/json', function(data) {
@@ -74,7 +84,6 @@ GLoc = {
     },
 };
 
-var w,
 WeatherInfo = {
 
     settings: {
@@ -249,7 +258,6 @@ WeatherInfo = {
     }
 };
 
-var c,
 CanvasBackground = {
     settings: {
         weatherBackground: $('#weather-background'),
