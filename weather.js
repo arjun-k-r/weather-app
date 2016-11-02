@@ -43,7 +43,8 @@ GLoc = {
             if (GLoc.authorizedGeo()) {
                 if(navigator.geolocation) {
                     navigator.geolocation.getCurrentPosition(GLoc.geoSuccess, GLoc.geoError);
-                } 
+                } else {
+                }
             } else {
                     
                     $.getJSON('http://ip-api.com/json')
@@ -101,7 +102,7 @@ GLoc = {
     },
 
     authorizedGeo: function() {
-        if (typeof localStorage['authorizedGeoLocation'] === 1) {
+        if (localStorage['authorizedGeoLocation'] === "1") {
             return true;
         } else {
             return false;
