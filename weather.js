@@ -19,7 +19,7 @@ GLoc = {
     init: function() {
         g = this.settings;
         this.bindUIActions();
-        $.getJSON('http://freegeoip.net/json/')
+        $.getJSON('http://ip-api.com/json')
             .done(function(data) {
                 GLoc.geoSuccess(data);
             });
@@ -67,7 +67,7 @@ GLoc = {
 
         // Do magic with the location
         g.startPos = position;
-        g.searchQuery = 'http://api.openweathermap.org/data/2.5/weather?lat=' + g.startPos.latitude + '&lon=' + g.startPos.longitude + '&appid=0596fe0573fa9daa94c2912e5e383ed3' +'&lang=' + g.lang;
+        g.searchQuery = 'http://api.openweathermap.org/data/2.5/weather?lat=' + g.startPos.lat + '&lon=' + g.startPos.lon + '&appid=0596fe0573fa9daa94c2912e5e383ed3' +'&lang=' + g.lang;
 
         $.getJSON(g.searchQuery, function(data) {
             WeatherInfo.setWeatherData(data);
