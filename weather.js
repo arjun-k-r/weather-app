@@ -10,68 +10,116 @@ GLoc = {
     settings: {
         geoButton: $('#geo-button'),
         geoErrorMessage: $('#geo-error-message'),
+        geoDeclineMessage: $('#geo-decline-message'),
         startPos: '',
         searchQuery: '',
         closeButton: $('#close-error'),
+        closeDecline: $('#close-decline'),
         lang : navigator.language || navigator.userLanguage
     },
 
     init: function() {
         g = this.settings;
         this.bindUIActions();
-        $.getJSON('http://ip-api.com/json')
-            .done(function(data) {
-                GLoc.geoSuccess(data);
-            });
+
+        GLoc.getGeoLocation("start");
     },
 
     bindUIActions: function() {
         g.geoButton.on('click', function() {
-            GLoc.getGeoLocation();
+            GLoc.getGeoLocation("button");
         });
 
         g.closeButton.on('click', function() {
             GLoc.hideGeoErrorMessageBanner();
+            GLoc.hideGeoDeclineMessageBanner();
+        });
+
+        g.closeDecline.on('click', function() {
+            GLoc.hideGeoDeclineMessageBanner();
         });
 
     },
 
-    getGeoLocation: function() {
-        //navigator.geolocation.getCurrentPosition(GLoc.geoSuccess, GLoc.geoError);
+    getGeoLocation: function(method) {
 
-        // $.getJSON('http://ip-api.com/json', function(data) {
-        //     GLoc.geoSuccess(data);
-        // });
+        if (method === "start") {
 
-
-        $.getJSON('http://freegeoip.net/json/')
-            .done(function(data) {
-                GLoc.geoSuccess(data);
-            })
-            .fail(function(jqXHR, textStatus, error) {
-                GLoc.geoError(error);
-            });
+            if (GLoc.authorizedGeo()) {
+                if(navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(GLoc.geoSuccess, GLoc.geoError);
+                } 
+            } else {
+                    
+                    $.getJSON('http://ip-api.com/json')
+                        .done(function(data) {
+                            GLoc.geoSuccess(data, 'IP');
+                        })
+                    .fail(function(jqXHR, textStatus, error) {
+                        GLoc.geoError(error);
+                    });
+            }
+        } else {
+            if(navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(GLoc.geoSuccess, GLoc.geoError);
+                } else {
+                    $.getJSON('http://ip-api.com/json')
+                        .done(function(data) {
+                            GLoc.geoSuccess(data, 'IP');
+                        })
+                    .fail(function(jqXHR, textStatus, error) {
+                        GLoc.geoError(error);
+                    });
+                }
+        }
+        
     },
 
     showGeoErrorMessageBanner: function() {
-        g.geoErrorMessage.toggleClass('hide');
+        g.geoErrorMessage.removeClass('hide');
     },
 
     hideGeoErrorMessageBanner: function() {
         g.geoErrorMessage.addClass('hide');
     },
 
-    geoSuccess: function(position) {
+    showGeoDeclineMessageBanner: function() {
+        g.geoDeclineMessage.removeClass('hide');
+    },
+
+    hideGeoDeclineMessageBanner: function() {
+        g.geoDeclineMessage.addClass('hide');
+    },
+
+    geoSuccess: function(position, method) {
         // We have the location. Don't display the banner.
         GLoc.hideGeoErrorMessageBanner();
+        GLoc.hideGeoDeclineMessageBanner();
+
+        
 
         // Do magic with the location
-        g.startPos = position;
-        g.searchQuery = 'http://api.openweathermap.org/data/2.5/weather?lat=' + g.startPos.lat + '&lon=' + g.startPos.lon + '&appid=0596fe0573fa9daa94c2912e5e383ed3' +'&lang=' + g.lang;
+        if (method === "IP") {
+            var latitude = position.lat;
+            var longitude = position.lon;
+        } else {
+            localStorage['authorizedGeoLocation'] = 1;
+            var latitude = position.coords.latitude;
+            var longitude = position.coords.longitude;
+        }
+        g.searchQuery = 'http://api.openweathermap.org/data/2.5/weather?lat=' + latitude + '&lon=' + longitude + '&appid=0596fe0573fa9daa94c2912e5e383ed3' +'&lang=' + g.lang;
 
         $.getJSON(g.searchQuery, function(data) {
             WeatherInfo.setWeatherData(data);
         });
+    },
+
+    authorizedGeo: function() {
+        if (typeof localStorage['authorizedGeoLocation'] === 1) {
+            return true;
+        } else {
+            return false;
+        }
     },
 
     geoError: function (error) {
@@ -80,8 +128,14 @@ GLoc = {
         case error.TIMEOUT:
             GLoc.showGeoErrorMessageBanner();
             break;
+        case 1:
+            localStorage['authorizedGeoLocation'] = 0;
+
+            GLoc.showGeoDeclineMessageBanner();
+        default:
+
         }
-    },
+    }
 };
 
 WeatherInfo = {
@@ -164,6 +218,7 @@ WeatherInfo = {
 
     setWeatherData: function(data) {
         GLoc.hideGeoErrorMessageBanner();
+        GLoc.hideGeoDeclineMessageBanner();
         $('#front-page-description').addClass('hide');
         w.weather.removeClass('hide');
         w.location.text(data.name + ', ' + data.sys.country);
